@@ -63,6 +63,10 @@ public class TemplateHelper {
         
         context = new SimpleHash(ObjectWrapper.BEANS_WRAPPER);
     	freeMarkerEngine = new Configuration();
+    	
+    	//deepfree add start
+    	freeMarkerEngine.setDefaultEncoding("UTF-8");
+    	//deepfree add end
         
         List loaders = new ArrayList();
         
