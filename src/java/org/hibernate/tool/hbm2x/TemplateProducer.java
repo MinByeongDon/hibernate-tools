@@ -1,10 +1,14 @@
 package org.hibernate.tool.hbm2x;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -24,7 +28,6 @@ public class TemplateProducer {
 	}
 	
 	public void produce(Map additionalContext, String templateName, File destination, String identifier, String fileType, String rootContext) {
-		
 		String tempResult = produceToString( additionalContext, templateName, rootContext );
 		
 		if(tempResult.trim().length()==0) {
@@ -54,25 +57,49 @@ public class TemplateProducer {
 				}				
 			}
 		}
-		
 	}
 
 
 	private String produceToString(Map additionalContext, String templateName, String rootContext) {
 		Map contextForFirstPass = additionalContext;
 		putInContext( th, contextForFirstPass );		
+
+		//deepfree remark
 		StringWriter tempWriter = new StringWriter();
 		BufferedWriter bw = new BufferedWriter(tempWriter);
 		// First run - writes to in-memory string
 		th.processTemplate(templateName, bw, rootContext);
+		
+		//deepfree add
+		//ByteArrayOutputStream os = new ByteArrayOutputStream();
+		//try {
+		//	Writer w = new OutputStreamWriter(os, "UTF-8");
+		//	th.processTemplate(templateName, w, rootContext);
+		//} catch (UnsupportedEncodingException e) {
+		//	throw new RuntimeException("Error while create OutputStreamWriter", e);
+		//}
+		
 		removeFromContext( th, contextForFirstPass );
 		try {
+			//deepfree remark
 			bw.flush();
+			
+			//deepfree add
+			//os.flush();
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Error while flushing to string",e);
 		}
+		
+		//deepfree remark
 		return tempWriter.toString();
+		
+		//deepfree add
+		//try {
+		//	return new String(os.toByteArray(), "UTF-8");
+		//} catch (UnsupportedEncodingException e) {
+		//	throw new RuntimeException("Error while convert ByteArrayOutputStream to String", e);
+		//}
 	}
 
 	private void removeFromContext(TemplateHelper templateHelper, Map context) {

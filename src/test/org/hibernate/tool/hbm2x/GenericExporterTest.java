@@ -150,7 +150,8 @@ public class GenericExporterTest extends NonReflectiveTestCase {
 			ge.start();
 			fail();
 		} catch(ExporterException e) {
-			assertTrue(e.getMessage().startsWith("Error while processing Entity:"));			
+			//assertTrue(e.getMessage().startsWith("Error while processing Entity:"));
+			assertTrue("Error while processing Entity:" + e.toString(), e.getMessage().startsWith("Error while processing Entity:"));
 		}
 
 

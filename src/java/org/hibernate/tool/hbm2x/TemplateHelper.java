@@ -24,6 +24,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
+import freemarker.core.Environment;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleDate;
@@ -86,7 +87,6 @@ public class TemplateHelper {
         loaders.add(new ClassTemplateLoader(this.getClass(),"/")); // the template names are like pojo/Somewhere so have to be a rooted classpathloader
         
         freeMarkerEngine.setTemplateLoader(new MultiTemplateLoader((TemplateLoader[]) loaders.toArray(new TemplateLoader[loaders.size()])));
-        
     }
     
     
@@ -202,13 +202,16 @@ public class TemplateHelper {
 			t.process(getContext(), output);           
 	    } 
 	    catch (IOException e) {
-	        throw new ExporterException("Error while processing template string", e);
+	        throw new ExporterException("Error while processing template string. " + e.toString(), e);
+	        //throw new ExporterException("Error while processing template string", e);
 	    } 
 	    catch (TemplateException te) {
-	    	throw new ExporterException("Error while processing template string", te);
+	    	throw new ExporterException("Error while processing template string. " + te.toString(), te);
+	    	//throw new ExporterException("Error while processing template string", te);
 	    }
 	    catch (Exception e) {
-	        throw new ExporterException("Error while processing template string", e);
+	        throw new ExporterException("Error while processing template string. " + e.toString(), e);
+	        //throw new ExporterException("Error while processing template string", e);
 	    }
 	}
 	
@@ -255,17 +258,28 @@ public class TemplateHelper {
     	}
     	
     	try {
+    		//deepfree remark
     		Template template = freeMarkerEngine.getTemplate(templateName);
-    		template.process(getContext(), output);            
+    		template.process(getContext(), output);
+    		
+    		//deepfree mod
+    		//@see http://freemarker.org/docs/pgui_misc_charset.html
+    		//Template template = freeMarkerEngine.getTemplate(templateName);
+    		//Environment env = template.createProcessingEnvironment(rootContext, output);
+    		//env.setOutputEncoding("UTF-8");
+    		//env.process(); 
         } 
         catch (IOException e) {
-            throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, e);
+            //throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, e);
+        	throw new ExporterException("Error while processing " + rootContext + " with template " + templateName + " e: " + e.toString(), e);
         }
         catch (TemplateException te) {        	
-        	throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, te);
+        	//throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, te);
+        	throw new ExporterException("Error while processing " + rootContext + " with template " + templateName + " te: " + te.toString(), te);
         }        
         catch (Exception e) {
-        	throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, e);
+        	//throw new ExporterException("Error while processing " + rootContext + " with template " + templateName, e);
+        	throw new ExporterException("Error while processing " + rootContext + " with template " + templateName + " e: " + e.toString(), e);
         }    	
     }
         

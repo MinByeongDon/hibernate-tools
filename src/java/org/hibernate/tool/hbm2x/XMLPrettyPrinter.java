@@ -96,6 +96,18 @@ public final class XMLPrettyPrinter {
 		outputFile.createNewFile();
 		os = new BufferedOutputStream( bos );
 
+		//note by deepfree@gmail.com start
+		//
+		// UTF-8로 export된 XML이 유니코드가 깨지는 문제 발생의 원인
+		//
+		// JTidy(http://sourceforge.net/projects/jtidy/files/JTidy/r938/)를 사용하는데
+		//   2009년의  릴리즈 r938이 아닌 2006년의 20060801을 사용하는 것이 원인으로 보임
+		// 또는
+		// java.io.ByteArrayOutputStream.toByteArray()으로 받은 바이트배열을 
+		//   파일에 기록할 때 UTF-8문자열로 변환처리 필요한것으로 판단됨
+		//
+		//note by deepfree@gmail.com end
+			
 		tidy.parse( is, os );
 		byte[] bs = bos.toByteArray();
 		try {
